@@ -20,7 +20,6 @@ func makeReq(url string) []byte {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	log.Println(resp.Header)
 	data, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
