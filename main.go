@@ -9,25 +9,30 @@ import (
 	"github.com/reujab/wallpaper"
 )
 
-const (
-	url string = "https://source.unsplash.com/featured/1360x768/?nature"
-)
+var url string = "https://source.unsplash.com/featured/1360x768"
 
-func downloadImage(url string) string {
-	log.Println("Downloading Image")
-
+func makeReq(url string) []byte {
+	// res, _ := http.Head(url)
+	// maps := res.Header
 	resp, err := http.Get(url)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-
+	log.Println(resp.Header)
 	data, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	return data
+
+}
+
+func downloadImage(data []byte) string {
+	log.Println("Downloading Image")
 
 	home := os.Getenv("HOME")
 	addrs := home + "/.image"
@@ -44,6 +49,5 @@ func downloadImage(url string) string {
 }
 
 func main() {
-	addrs := downloadImage(url)
-	wallpaper.SetFromFile(addrs)
+	wallpaper.SetFromFile(downloadImage(makeReq(url)))
 }
